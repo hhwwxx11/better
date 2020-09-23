@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <cstring>
@@ -7,16 +8,17 @@ using namespace std;
 const int w_1m = 1000000;
 int w[w_1m];
 
-bool is_match(int t, int w[], int w_length)
+int binarySearch(int t, int low, int high)
 {
-    for (int i = 0; i < w_length; i++)
+    //对排序后的有序数据进行二分查找
+    while (low <= high)
     {
-        if (t!= w[i])
-        {
-            return true;
-        }
+        int mid = low + (high - low) / 2;
+        if (t < w[mid])high = mid - 1;
+        else if (t > w[mid])low = mid + 1;
+        else return mid;
     }
-    return false;
+    return -1;
 }
 
 // brute -w whitelist < T
@@ -30,7 +32,7 @@ int main(int argc, char* argv[])
     // init w
     ////    for(int i=0;i<w_1m)
     ////    {
-    ////        w[i]=-1; //濉厖闈炴硶鏁版嵁
+    ////        w[i]=-1; //填充非法数据
     ////    }
     ifstream infile;
     infile.open(argv[2]);
@@ -43,10 +45,14 @@ int main(int argc, char* argv[])
     cout << w_length << endl;
     // check t
     int t = 0;
+
+    sort(w, w + w_length);
+    //对w中的数据进行排序
     while (cin >> t)
     {
-        if (is_match(t, w, w_length))
+        if (binarySearch(t, 0, w_length) != -1)
         {
+            //cout << t << endl;
             printf("%d", t);
         }
     }
